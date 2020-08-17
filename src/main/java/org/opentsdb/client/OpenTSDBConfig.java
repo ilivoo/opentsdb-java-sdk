@@ -32,6 +32,10 @@ public class OpenTSDBConfig {
 
     private BatchPutHttpResponseCallback.BatchPutCallBack batchPutCallBack;
 
+    private String userName;
+
+    private String password;
+
     public static class Builder {
 
         private String host;
@@ -78,6 +82,16 @@ public class OpenTSDBConfig {
          */
         private BatchPutHttpResponseCallback.BatchPutCallBack batchPutCallBack;
 
+        /**
+         * 用户名
+         */
+        private String userName;
+
+        /**
+         * 密码
+         */
+        private String password;
+
         public Builder(String host, int port) {
             this.host = host;
             this.port = port;
@@ -96,6 +110,8 @@ public class OpenTSDBConfig {
             config.batchPutTimeLimit = this.batchPutTimeLimit;
             config.readonly = this.readonly;
             config.batchPutCallBack = this.batchPutCallBack;
+            config.userName = userName;
+            config.password = password;
 
             return config;
         }
@@ -158,6 +174,15 @@ public class OpenTSDBConfig {
             return this;
         }
 
+        public Builder userName(String userName) {
+            this.userName = userName;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
     }
 
     public static Builder address(String host, int port) {

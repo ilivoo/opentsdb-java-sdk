@@ -1,12 +1,17 @@
 package org.opentsdb.client.http;
 
+import com.google.common.base.Strings;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.ConnectionReuseStrategy;
 import org.apache.http.HeaderElement;
 import org.apache.http.HeaderElementIterator;
 import org.apache.http.HttpResponse;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.conn.ConnectionKeepAliveStrategy;
+import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.nio.client.CloseableHttpAsyncClient;
 import org.apache.http.impl.nio.client.HttpAsyncClientBuilder;
 import org.apache.http.impl.nio.client.HttpAsyncClients;
@@ -126,6 +131,14 @@ public class HttpClientFactory {
         if (!openTSDBConfig.isReadonly()) {
             httpAsyncClientBuilder.setKeepAliveStrategy(myStrategy());
         }
+        if (!Strings.isNullOrEmpty(openTSDBConfig.getUserName())) {
+            UsernamePasswordCredentials credentials = new UsernamePasswordCredentials(openTSDBConfig.getUserName(),
+                    openTSDBConfig.getPassword());
+            CredentialsProvider provider = new BasicCredentialsProvider();
+            provider.setCredentials(AuthScope.ANY, credentials);
+            httpAsyncClientBuilder.setDefaultCredentialsProvider(provider);
+        }
+
         CloseableHttpAsyncClient client = httpAsyncClientBuilder.build();
         return client;
     }
